@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>논문 도우미 - 대학생 논문 작성 지원 플랫폼</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a5f;
+            --accent: #d97706;
+            --bg: #ffffff;
+            --text: #1f2937;
+            --border: #e5e7eb;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        nav button.active {
+            background: var(--accent);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 홈 페이지 */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #2d5a8c 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero .accent-text {
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b8860b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        /* 가이드 페이지 */
+        .guide-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .guide-sidebar {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 80px;
+        }
+
+        .guide-sidebar button {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .guide-sidebar button:hover,
+        .guide-sidebar button.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .guide-content {
+            background: white;
+        }
+
+        .guide-section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .guide-section.active {
+            display: block;
+        }
+
+        .guide-section h2 {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .guide-section h3 {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+
+        .guide-section p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            color: #4b5563;
+        }
+
+        .guide-section ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .guide-section li {
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+
+        /* 인용 생성기 */
+        .citation-form {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .citation-list {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .citation-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .citation-item:last-child {
+            border-bottom: none;
+        }
+
+        .citation-info {
+            flex: 1;
+        }
+
+        .citation-type {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .citation-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .citation-author {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .citation-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .citation-actions button {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .format-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .format-tabs button {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .format-tabs button.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .format-content {
+            display: none;
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .format-content.active {
+            display: block;
+        }
+
+        /* 템플릿 페이지 */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .template-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .template-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+
+        .template-preview {
+            background: #f3f4f6;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #d1d5db;
+        }
+
+        .template-info {
+            padding: 1.5rem;
+        }
+
+        .template-info h3 {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .template-specs {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .template-specs div {
+            margin-bottom: 0.25rem;
+        }
+
+        .template-download {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .template-download:hover {
+            background: #b8860b;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .guide-container {
+                grid-template-columns: 1fr;
+            }
+
+            .guide-sidebar {
+                position: static;
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            .guide-sidebar button {
+                flex: 1;
+                min-width: 100px;
+                margin-bottom: 0;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                gap: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            nav button {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .cta-buttons button {
+                width: 100%;
+            }
+        }
+
+        .section-title {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-brand" onclick="showPage('home')">
+            📚 논문 도우미
+        </div>
+        <nav>
+            <button onclick="showPage('home')">홈</button>
+            <button onclick="showPage('guide')">작성 가이드</button>
+            <button onclick="showPage('citation')">인용 생성기</button>
+            <button onclick="showPage('templates')">템플릿</button>
+            <button onclick="showPage('mypage')">내 자료</button>
+        </nav>
+    </header>
+
+    <!-- 홈 페이지 -->
+    <div id="home" class="page active">
+        <div class="container">
+            <div class="hero">
+                <h1>인용 형식,<br><span class="accent-text">더 이상 헷갈리지</span><br>마세요</h1>
+                <p>논문 작성의 첫 단계부터 마지막까지. 자동 각주 생성, 참고문헌 정렬, 형식 검사를 한 곳에서 무료로 제공합니다.</p>
+                <div class="cta-buttons">
+                    <button class="btn-primary" onclick="showPage('citation')">각주 바로 만들기 →</button>
+                    <button class="btn-secondary" onclick="showPage('guide')">작성 가이드 보기</button>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>4가지 인용 형식</h3>
+                    <p>APA / MLA / Chicago / 한국연구재단 양식 중 선택해 변환</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>3종 논문 템플릿</h3>
+                    <p>논문 템플릿</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3>무료 기능 제공</h3>
+                    <p>모든 기능 제공</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>즉시 .docx 다운로드</h3>
+                    <p>.docx 다운로드</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 3rem 0;">
+                <h2 class="section-title">핵심 기능</h2>
+                <p style="font-size: 1.1rem; color: #6b7280; margin-bottom: 2rem;">논문 작성의 모든 단계를 지원합니다</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 작성 가이드 -->
+    <div id="guide" class="page">
+        <div class="container">
+            <h1 class="section-title">논문 작성 가이드</h1>
+            
+            <div class="guide-container">
+                <div class="guide-sidebar">
+                    <button class="guide-btn active" onclick="showGuideSection('structure')">논문 구성</button>
+                    <button class="guide-btn" onclick="showGuideSection('abstract')">초록 작성</button>
+                    <button class="guide-btn" onclick="showGuideSection('intro')">서론 작성</button>
+                    <button class="guide-btn" onclick="showGuideSection('method')">연구방법</button>
+                    <button class="guide-btn" onclick="showGuideSection('references')">참고문헌</button>
+                </div>
+
+                <div class="guide-content">
+                    <div id="structure" class="guide-section active">
+                        <h2>논문의 기본 구성</h2>
+                        <p>학술 논문은 일반적으로 다음과 같은 구조를 따릅니다:</p>
+                        <h3>1. 표지</h3>
+                        <p>논문 제목, 저자명, 소속, 제출 날짜 등을 기재합니다.</p>
+                        <h3>2. 초록 (Abstract)</h3>
+                        <p>논문의 전체 내용을 150-250단어로 요약합니다. 연구 목적, 방법, 결과, 결론을 포함해야 합니다.</p>
+                        <h3>3. 서론 (Introduction)</h3>
+                        <p>연구의 배경, 문제 제기, 연구 목표를 명확히 제시합니다.</p>
+                        <h3>4. 본론</h3>
+                        <p>연구 방법, 결과, 분석 등 핵심 내용을 담습니다.</p>
+                        <h3>5. 결론 (Conclusion)</h3>
+                        <p>연구 결과의 의의와 향후 연구 방향을 제시합니다.</p>
+                        <h3>6. 참고문헌 (References)</h3>
+                        <p>논문에서 인용한 모든 자료를 일정한 형식에 따라 정렬합니다.</p>
+                    </div>
+
+                    <div id="abstract" class="guide-section">
+                        <h2>초록 작성법</h2>
+                        <p>초록은 논문의 전체 내용을 간결하게 요약하는 부분입니다.</p>
+                        <h3>초록의 구성 요소</h3>
+                        <ul>
+                            <li><strong>연구 목적:</strong> 이 연구가 왜 필요한가?</li>
+                            <li><strong>연구 방법:</strong> 어떤 방법으로 연구했는가?</li>
+                            <li><strong>주요 결과:</strong> 어떤 결과를 얻었는가?</li>
+                            <li><strong>결론 및 의의:</strong> 이 연구의 의미는 무엇인가?</li>
+                        </ul>
+                        <h3>작성 팁</h3>
+                        <ul>
+                            <li>150-250단어 범위 내에서 작성</li>
+                            <li>과거형으로 작성 (예: "연구했다")</li>
+                            <li>약자는 처음 사용할 때 풀어서 표기</li>
+                            <li>참고문헌 인용은 포함하지 않음</li>
+                        </ul>
+                    </div>
+
+                    <div id="intro" class="guide-section">
+                        <h2>서론 작성법</h2>
+                        <p>서론은 독자에게 연구의 필요성과 중요성을 설득하는 부분입니다.</p>
+                        <h3>서론의 구성</h3>
+                        <ul>
+                            <li><strong>배경:</strong> 연구 주제의 일반적인 배경</li>
+                            <li><strong>선행 연구:</strong> 기존 연구들의 성과와 한계</li>
+                            <li><strong>문제 제기:</strong> 해결해야 할 구체적인 문제</li>
+                            <li><strong>연구 목표:</strong> 이 연구의 목표와 기여도</li>
+                        </ul>
+                        <h3>작성 팁</h3>
+                        <ul>
+                            <li>일반적인 내용에서 구체적인 내용으로 진행 (역삼각형 구조)</li>
+                            <li>선행 연구를 충분히 검토하고 인용</li>
+                            <li>연구의 필요성을 명확히 제시</li>
+                        </ul>
+                    </div>
+
+                    <div id="method" class="guide-section">
+                        <h2>연구방법 작성법</h2>
+                        <p>연구방법은 다른 연구자가 당신의 연구를 재현할 수 있도록 상세히 기술해야 합니다.</p>
+                        <h3>포함해야 할 내용</h3>
+                        <ul>
+                            <li><strong>연구 설계:</strong> 정성적/정량적 연구 등</li>
+                            <li><strong>연구 대상:</strong> 표본 크기, 선정 기준</li>
+                            <li><strong>데이터 수집:</strong> 방법, 기간, 도구</li>
+                            <li><strong>데이터 분석:</strong> 분석 방법, 통계 기법</li>
+                        </ul>
+                        <h3>작성 팁</h3>
+                        <ul>
+                            <li>과거형으로 작성</li>
+                            <li>충분한 세부 사항 제공</li>
+                            <li>표나 그림으로 복잡한 내용 설명</li>
+                        </ul>
+                    </div>
+
+                    <div id="references" class="guide-section">
+                        <h2>참고문헌 작성법</h2>
+                        <p>참고문헌은 논문에서 인용한 모든 자료를 일정한 형식에 따라 정렬한 목록입니다.</p>
+                        <h3>주요 인용 형식</h3>
+                        <ul>
+                            <li><strong>APA 형식:</strong> 미국심리학회 표준 (저자, 연도, 제목, 출판사)</li>
+                            <li><strong>MLA 형식:</strong> 현대언어협회 표준 (저자, 제목, 출판사, 연도)</li>
+                            <li><strong>Chicago 형식:</strong> 시카고 스타일 (주로 역사학 분야)</li>
+                            <li><strong>한국연구재단 형식:</strong> 국내 학술지 표준</li>
+                        </ul>
+                        <h3>참고문헌 작성 팁</h3>
+                        <ul>
+                            <li>선택한 형식을 논문 전체에서 일관되게 사용</li>
+                            <li>저자명 기준으로 알파벳순(또는 가나다순) 정렬</li>
+                            <li>모든 인용 자료를 빠짐없이 포함</li>
+                            <li>각 형식의 세부 규칙 준수 (띄어쓰기, 구두점 등)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 인용 생성기 -->
+    <div id="citation" class="page">
+        <div class="container">
+            <h1 class="section-title">인용 생성기</h1>
+            
+            <div class="citation-form">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary);">자료 정보 입력</h2>
+                
+                <div class="form-group">
+                    <label>자료 유형</label>
+                    <select id="citationType">
+                        <option value="book">단행본 (책)</option>
+                        <option value="journal">학술논문</option>
+                        <option value="web">인터넷 기사</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>저자명 *</label>
+                        <input type="text" id="author" placeholder="예: 김철수">
+                    </div>
+                    <div class="form-group">
+                        <label>발행연도</label>
+                        <input type="number" id="year" placeholder="예: 2024">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>제목 *</label>
+                    <input type="text" id="title" placeholder="논문 또는 책 제목">
+                </div>
+
+                <div class="form-group">
+                    <label>출판사/학술지명</label>
+                    <input type="text" id="publisher" placeholder="예: 한국대학출판부">
+                </div>
+
+                <div class="form-group">
+                    <label>추가 정보 (쪽수, URL 등)</label>
+                    <textarea id="additionalInfo" placeholder="예: pp. 123-145 또는 https://example.com"></textarea>
+                </div>
+
+                <button class="btn-primary" onclick="addCitation()" style="width: 100%; padding: 1rem;">자료 추가</button>
+            </div>
+
+            <div id="citationList" style="margin-bottom: 2rem;"></div>
+
+            <div style="background: white; border: 1px solid var(--border); border-radius: 8px; padding: 2rem;">
+                <h2 style="margin-bottom: 1.5rem; color: var(--primary);">인용 형식 선택</h2>
+                
+                <div class="format-tabs">
+                    <button class="format-btn active" onclick="switchFormat('korean')">한국식 각주</button>
+                    <button class="format-btn" onclick="switchFormat('apa')">APA</button>
+                    <button class="format-btn" onclick="switchFormat('mla')">MLA</button>
+                    <button class="format-btn" onclick="switchFormat('chicago')">Chicago</button>
+                    <button class="format-btn" onclick="switchFormat('krfoundation')">한국연구재단</button>
+                </div>
+
+                <div id="korean" class="format-content active"></div>
+                <div id="apa" class="format-content"></div>
+                <div id="mla" class="format-content"></div>
+                <div id="chicago" class="format-content"></div>
+                <div id="krfoundation" class="format-content"></div>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button class="btn-primary" onclick="downloadBibliography('txt')">TXT 다운로드</button>
+                    <button class="btn-primary" onclick="downloadBibliography('docx')">DOCX 다운로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 템플릿 페이지 -->
+    <div id="templates" class="page">
+        <div class="container">
+            <h1 class="section-title">논문 템플릿</h1>
+            
+            <div class="template-grid">
+                <div class="template-card">
+                    <div class="template-preview">📄</div>
+                    <div class="template-info">
+                        <h3>학술논문 템플릿</h3>
+                        <div class="template-specs">
+                            <div>• 글꼴: Noto Serif KR 11pt</div>
+                            <div>• 줄간격: 1.5줄</div>
+                            <div>• 여백: 상하좌우 2.5cm</div>
+                        </div>
+                        <button class="template-download" onclick="downloadTemplate('academic')">다운로드</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-preview">🎓</div>
+                    <div class="template-info">
+                        <h3>졸업논문 템플릿</h3>
+                        <div class="template-specs">
+                            <div>• 글꼴: Noto Serif KR 12pt</div>
+                            <div>• 줄간격: 2줄</div>
+                            <div>• 여백: 상하좌우 3cm</div>
+                        </div>
+                        <button class="template-download" onclick="downloadTemplate('thesis')">다운로드</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-preview">📑</div>
+                    <div class="template-info">
+                        <h3>학술보고서 템플릿</h3>
+                        <div class="template-specs">
+                            <div>• 글꼴: Noto Serif KR 11pt</div>
+                            <div>• 줄간격: 1.5줄</div>
+                            <div>• 여백: 상하좌우 2cm</div>
+                        </div>
+                        <button class="template-download" onclick="downloadTemplate('report')">다운로드</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 내 자료 페이지 -->
+    <div id="mypage" class="page">
+        <div class="container">
+            <h1 class="section-title">내 자료</h1>
+            
+            <div id="mypageContent">
+                <p style="text-align: center; color: #6b7280; padding: 2rem;">저장된 자료가 없습니다. 인용 생성기에서 자료를 추가해보세요.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 논문 도우미. 모든 기능은 무료로 제공됩니다.</p>
+    </footer>
+
+    <script>
+        // 상태 관리
+        let citations = [];
+        let currentFormat = 'korean';
+
+        // localStorage에서 자료 로드
+        function loadCitations() {
+            const saved = localStorage.getItem('thesis_citations');
+            if (saved) {
+                citations = JSON.parse(saved);
+            }
+        }
+
+        // localStorage에 자료 저장
+        function saveCitations() {
+            localStorage.setItem('thesis_citations', JSON.stringify(citations));
+        }
+
+        // 페이지 전환
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (pageId === 'mypage') {
+                updateMyPage();
+            }
+        }
+
+        // 가이드 섹션 전환
+        function showGuideSection(sectionId) {
+            document.querySelectorAll('.guide-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.guide-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // 자료 추가
+        function addCitation() {
+            const type = document.getElementById('citationType').value;
+            const author = document.getElementById('author').value.trim();
+            const title = document.getElementById('title').value.trim();
+            const publisher = document.getElementById('publisher').value.trim();
+            const year = document.getElementById('year').value;
+            const additionalInfo = document.getElementById('additionalInfo').value.trim();
+
+            if (!author || !title) {
+                alert('저자명과 제목은 필수입니다.');
+                return;
+            }
+
+            const citation = {
+                id: Date.now(),
+                type,
+                author,
+                title,
+                publisher,
+                year: year ? parseInt(year) : null,
+                additionalInfo
+            };
+
+            citations.push(citation);
+            saveCitations();
+            
+            // 폼 초기화
+            document.getElementById('author').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('publisher').value = '';
+            document.getElementById('year').value = '';
+            document.getElementById('additionalInfo').value = '';
+
+            updateCitationList();
+            generateFormats();
+            alert('자료가 추가되었습니다.');
+        }
+
+        // 자료 삭제
+        function deleteCitation(id) {
+            citations = citations.filter(c => c.id !== id);
+            saveCitations();
+            updateCitationList();
+            generateFormats();
+        }
+
+        // 자료 목록 업데이트
+        function updateCitationList() {
+            const list = document.getElementById('citationList');
+            if (citations.length === 0) {
+                list.innerHTML = '';
+                return;
+            }
+
+            list.innerHTML = '<div class="citation-list">' + citations.map(c => `
+                <div class="citation-item">
+                    <div class="citation-info">
+                        <div class="citation-type">${getTypeLabel(c.type)}</div>
+                        <div class="citation-title">${c.title}</div>
+                        <div class="citation-author">${c.author}${c.year ? ` (${c.year})` : ''}</div>
+                    </div>
+                    <div class="citation-actions">
+                        <button class="btn-secondary" onclick="deleteCitation(${c.id})">삭제</button>
+                    </div>
+                </div>
+            `).join('') + '</div>';
+        }
+
+        function getTypeLabel(type) {
+            const labels = { book: '책', journal: '논문', web: '웹기사' };
+            return labels[type] || type;
+        }
+
+        // 형식 생성
+        function generateFormats() {
+            if (citations.length === 0) {
+                ['korean', 'apa', 'mla', 'chicago', 'krfoundation'].forEach(fmt => {
+                    document.getElementById(fmt).textContent = '자료를 추가해주세요.';
+                });
+                return;
+            }
+
+            const sorted = [...citations].sort((a, b) => a.author.localeCompare(b.author, 'ko'));
+
+            document.getElementById('korean').textContent = sorted.map((c, i) => 
+                `${i + 1}. ${c.author}. "${c.title}". ${c.publisher || ''}${c.year ? ` (${c.year})` : ''}.`
+            ).join('\n\n');
+
+            document.getElementById('apa').textContent = sorted.map(c =>
+                `${c.author} (${c.year || 'n.d.'}). ${c.title}. ${c.publisher || ''}.`
+            ).join('\n\n');
+
+            document.getElementById('mla').textContent = sorted.map(c =>
+                `${c.author}. "${c.title}." ${c.publisher || ''}, ${c.year || 'n.d.'}.`
+            ).join('\n\n');
+
+            document.getElementById('chicago').textContent = sorted.map(c =>
+                `${c.author}. "${c.title}." ${c.publisher || ''}, ${c.year || 'n.d.'}.`
+            ).join('\n\n');
+
+            document.getElementById('krfoundation').textContent = sorted.map(c =>
+                `${c.author}(${c.year || 'n.d.'}), "${c.title}", ${c.publisher || ''}.`
+            ).join('\n\n');
+        }
+
+        // 형식 전환
+        function switchFormat(format) {
+            currentFormat = format;
+            document.querySelectorAll('.format-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(format).classList.add('active');
+            
+            document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // 참고문헌 다운로드
+        function downloadBibliography(format) {
+            const content = document.getElementById(currentFormat).textContent;
+            
+            if (format === 'txt') {
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `참고문헌_${currentFormat}.txt`;
+                link.click();
+            } else if (format === 'docx') {
+                // 간단한 DOCX 생성 (실제로는 docx 라이브러리 필요)
+                alert('DOCX 다운로드는 현재 지원되지 않습니다. TXT 파일로 다운로드하신 후 Word에서 열어주세요.');
+            }
+        }
+
+        // 템플릿 다운로드
+        function downloadTemplate(templateName) {
+            const templates = {
+                academic: { font: 'Noto Serif KR', size: '11pt', lineHeight: '1.5', margin: '2.5cm' },
+                thesis: { font: 'Noto Serif KR', size: '12pt', lineHeight: '2', margin: '3cm' },
+                report: { font: 'Noto Serif KR', size: '11pt', lineHeight: '1.5', margin: '2cm' }
+            };
+
+            const template = templates[templateName];
+            const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: '${template.font}', serif;
+            font-size: ${template.size};
+            line-height: ${template.lineHeight};
+            margin: ${template.margin};
+        }
+        p { margin-bottom: 1em; }
+        h1 { font-size: 1.5em; margin: 1em 0 0.5em 0; }
+    </style>
+</head>
+<body>
+    <h1>논문 제목</h1>
+    <p>저자명</p>
+    <p>소속</p>
+    <p>제출일</p>
+    
+    <h1>초록</h1>
+    <p>초록 내용을 여기에 작성하세요.</p>
+    
+    <h1>1. 서론</h1>
+    <p>서론 내용을 여기에 작성하세요.</p>
+    
+    <h1>2. 본론</h1>
+    <p>본론 내용을 여기에 작성하세요.</p>
+    
+    <h1>3. 결론</h1>
+    <p>결론 내용을 여기에 작성하세요.</p>
+    
+    <h1>참고문헌</h1>
+    <p>참고문헌을 여기에 작성하세요.</p>
+</body>
+</html>
+            `;
+
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `논문_템플릿_${templateName}.html`;
+            link.click();
+        }
+
+        // 내 자료 페이지 업데이트
+        function updateMyPage() {
+            const content = document.getElementById('mypageContent');
+            if (citations.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 2rem;">저장된 자료가 없습니다. 인용 생성기에서 자료를 추가해보세요.</p>';
+                return;
+            }
+
+            content.innerHTML = '<div class="citation-list">' + citations.map(c => `
+                <div class="citation-item">
+                    <div class="citation-info">
+                        <div class="citation-type">${getTypeLabel(c.type)}</div>
+                        <div class="citation-title">${c.title}</div>
+                        <div class="citation-author">${c.author}${c.year ? ` (${c.year})` : ''}</div>
+                        ${c.publisher ? `<div style="color: #9ca3af; font-size: 0.9rem;">${c.publisher}</div>` : ''}
+                    </div>
+                    <div class="citation-actions">
+                        <button class="btn-secondary" onclick="deleteCitation(${c.id})">삭제</button>
+                    </div>
+                </div>
+            `).join('') + '</div>';
+        }
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCitations();
+            updateCitationList();
+            generateFormats();
+        });
+    </script>
+</body>
+</html>
